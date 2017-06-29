@@ -732,6 +732,8 @@ VkResourceRecord::~VkResourceRecord()
 {
   VkResourceType resType = Resource != NULL ? IdentifyTypeByPtr(Resource) : eResUnknown;
 
+  RDCLOG("~VkResourceRecord %p", this);
+
   if(resType == eResPhysicalDevice)
     SAFE_DELETE(memProps);
 

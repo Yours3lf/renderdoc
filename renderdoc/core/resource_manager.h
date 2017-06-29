@@ -139,6 +139,8 @@ struct ResourceRecord
 
     DataWritten = true;
 
+    RDCLOG("Inserting record %llu/%p with %u parents", ResID, this, (uint32_t)Parents.size());
+
     for(auto it = Parents.begin(); it != Parents.end(); ++it)
     {
       if(!(*it)->DataWritten)
@@ -146,6 +148,8 @@ struct ResourceRecord
         (*it)->Insert(recordlist);
       }
     }
+
+    RDCLOG("Inserted %llu/%p", ResID, this);
 
     if(!dataWritten)
       recordlist.insert(m_Chunks.begin(), m_Chunks.end());

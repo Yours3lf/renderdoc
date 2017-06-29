@@ -37,6 +37,8 @@ bool WrappedVulkan::Serialise_vkCreatePipelineLayout(Serialiser *localSerialiser
 
   if(m_State == READING)
   {
+    RDCLOG("Recreating pipeline layout %llu", id);
+
     VkPipelineLayout layout = VK_NULL_HANDLE;
 
     device = GetResourceManager()->GetLiveHandle<VkDevice>(devId);
@@ -110,10 +112,15 @@ VkResult WrappedVulkan::vkCreatePipelineLayout(VkDevice device,
       VkResourceRecord *record = GetResourceManager()->AddResourceRecord(*pPipelineLayout);
       record->AddChunk(chunk);
 
+      RDCLOG("Creating record for pipeline layout %llu - %p", record->GetResourceID(), record);
+
       for(uint32_t i = 0; i < pCreateInfo->setLayoutCount; i++)
       {
         VkResourceRecord *layoutrecord = GetRecord(pCreateInfo->pSetLayouts[i]);
         record->AddParent(layoutrecord);
+
+        RDCLOG("  Pipeline layout %llu uses set %llu", record->GetResourceID(),
+               layoutrecord->GetResourceID());
       }
     }
     else
@@ -421,6 +428,8 @@ VkResult WrappedVulkan::vkCreateGraphicsPipelines(VkDevice device, VkPipelineCac
         VkResourceRecord *record = GetResourceManager()->AddResourceRecord(pPipelines[i]);
         record->AddChunk(chunk);
 
+        RDCLOG("Creating record for pipeline %llu - %p", record->GetResourceID(), record);
+
         if(pipelineCache != VK_NULL_HANDLE)
         {
           VkResourceRecord *cacherecord = GetRecord(pipelineCache);
@@ -432,6 +441,8 @@ VkResult WrappedVulkan::vkCreateGraphicsPipelines(VkDevice device, VkPipelineCac
 
         VkResourceRecord *layoutrecord = GetRecord(pCreateInfos[i].layout);
         record->AddParent(layoutrecord);
+
+        RDCLOG("  using pipe layout %llu - %p", layoutrecord->GetResourceID(), layoutrecord);
 
         for(uint32_t s = 0; s < pCreateInfos[i].stageCount; s++)
         {

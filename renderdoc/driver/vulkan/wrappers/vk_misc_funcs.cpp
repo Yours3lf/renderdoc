@@ -74,6 +74,7 @@ void WrappedVulkan::MakeSubpassLoadRP(VkRenderPassCreateInfo &info,
     if(obj == VK_NULL_HANDLE)                                                                      \
       return;                                                                                      \
     type unwrappedObj = Unwrap(obj);                                                               \
+    RDCLOG("Destroying " #type " object %llu with record %p", GetResID(obj), GetRecord(obj));      \
     GetResourceManager()->ReleaseWrappedResource(obj, true);                                       \
     ObjDisp(device)->func(Unwrap(device), unwrappedObj, pAllocator);                               \
   }

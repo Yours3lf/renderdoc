@@ -102,6 +102,8 @@ bool WrappedVulkan::Serialise_vkCreateDescriptorSetLayout(
 
   if(m_State == READING)
   {
+    RDCLOG("Recreating descriptor set layout %llu", id);
+
     VkDescriptorSetLayout layout = VK_NULL_HANDLE;
 
     device = GetResourceManager()->GetLiveHandle<VkDevice>(devId);
@@ -195,6 +197,8 @@ VkResult WrappedVulkan::vkCreateDescriptorSetLayout(VkDevice device,
 
       VkResourceRecord *record = GetResourceManager()->AddResourceRecord(*pSetLayout);
       record->AddChunk(chunk);
+
+      RDCLOG("Creating record for descriptor set layout %llu - %p", record->GetResourceID(), record);
 
       record->descInfo = new DescriptorSetData();
       record->descInfo->layout = new DescSetLayout();
